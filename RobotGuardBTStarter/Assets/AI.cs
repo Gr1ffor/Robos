@@ -82,5 +82,107 @@ public class AI : MonoBehaviour
         }
     }
 
+    // metodo de patrulha
+    [Task]
+    public void PickDestination(int x, int z)
+    {
+        // pegar as posições x e z
+        Vector3 dest = new Vector3(x, 0, z);
+        // setta o destino
+        agent.SetDestination(dest);
+        // fala que foi um sucesso
+        Task.current.Succeed();
+    }
+
+    [Task]
+    // bool para olhar o player
+    bool SeePlayer()
+    {
+        // é a distancia dele menos a do player
+        Vector3 distance = player.transform.position - this.transform.position;
+        RaycastHit hit;
+        // bool para observar a parede
+        bool seeWall = false;
+        // desenha o raycast
+        Debug.DrawRay(this.transform.position, distance, Color.red);
+        // se o raycast colidir
+        if (Physics.Raycast(this.transform.position, distance, out hit))
+        {
+            // se o raycast colidir com a tag especifica
+            if (hit.collider.gameObject.tag == "wall")
+            {
+                // ver a parede fica true
+                seeWall = true;
+            }
+        }
+        // se inspeciona
+        if (Task.isInspected)
+        {
+            // distancia da wall
+            Task.current.debugInfo = string.Format("wall={0}", seeWall);
+        }
+        // se a distancia for menor que o range visivel e o seewall for falso
+        if (distance.magnitude < visibleRange && !seeWall)
+        {
+            // return como true
+            return true;
+        }
+        // senão voltar como falso
+        else
+        {
+            // return como false
+            return false;
+        }
+    }
+    [Task]
+    public void TargetPlayer()
+    {
+        // posição do player
+        target = player.transform.position;
+        // task foi concluida
+        Task.current.Succeed();
+    }
+
+    [Task]
+    public void LookAtTarget()
+    {
+        // detecta a direção sendo menor do que a posição do player
+        Vector3 direction = target - this.transform.position;
+        // deixa a rotação mais suave
+        this.transform.rotation = Quaternion.Slerp(this.transform.rotation, Quaternion.LookRotation(direction), Time.deltaTime * rotSpeed);
+        // se estiver inspecionando
+        if (Task.isInspected)
+        {
+            // mostra o angle
+            Task.current.debugInfo = string.Format("angle={0}", Vector3.Angle(this.transform.forward, direction));
+        }
+        // se o this for menor que 5
+        if (Vector3.Angle(this.transform.forward, direction) < 5.0f)
+        {
+            // fala que foi concluida
+            Task.current.Succeed();
+        }
+    }
+    [Task]
+
+    public bool Fire()
+    {
+        // instancia o projetil da bala
+        GameObject bullet = GameObject.Instantiate(bulletPrefab, bulletSpawn.transform.position, bulletSpawn.transform.rotation);
+        // da a força do impulso para a bala
+        bullet.GetComponent<Rigidbody>().AddForce(bullet.transform.forward * 2000);
+        // retorna como verdadeiro
+        return true;
+    }
+
+    [Task]
+    bool Turn(float angle)
+    {
+        //pega a posição e faz ele virar para o alvo
+        var p = this.transform.position + Quaternion.AngleAxis(angle, Vector3.up) * this.transform.forward;
+        target = p;
+        return true;
+    }
+
 }
 

@@ -1,0 +1,16 @@
+tree("Root")
+	sequence
+		// randomiza uma das posições que ele vai observar
+		random(5,1,1,1)
+			// vira para uma direção
+			Turn(90.0)
+			// vira para uma direção
+			Turn(-90.0)
+			// vira para uma direção
+			Turn(145.0)
+			// vira para uma direção
+			Turn(-27.0)
+		// olha o alvo
+		LookAtTarget
+		// espera por um tempo aleatorio
+		WaitRandom(1.0,5.0)

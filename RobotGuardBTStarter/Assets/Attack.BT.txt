@@ -1,0 +1,13 @@
+tree("Root")
+	// espera ver o player
+	while SeePlayer
+		// em sequencia
+		sequence
+			// alveja o player
+			TargetPlayer
+			// olha para o player
+			LookAtTarget
+			// espera um tempo determinado
+			Wait(0.2)
+			// atira
+			Fire
