@@ -184,5 +184,20 @@ public class AI : MonoBehaviour
         return true;
     }
 
+    [Task]
+    public bool IsHealthLessThan(float health)
+    {
+        return this.health < health;
+    }
+    [Task]
+    public bool Explode()
+    {
+        // some com a barra de vida
+        Destroy(healthBar.gameObject);
+        // some com o robo
+        Destroy(this.gameObject);
+        return true;
+    }
+
 }
 
